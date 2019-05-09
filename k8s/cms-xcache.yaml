@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cms-xcache
+  namespace: osg
+  labels:
+    k8s-app: cms-xcache
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: cms-xcache
+    spec:
+      hostNetwork: true
+      nodeSelector: WHAT
+      containers:
+        - name: cms-xcache
+          image: vsastray/docker-xcache:cms-xcache
+          imagePullPoliicy: Always
+          env:
+            - name: XC_SITE
+              value: UCSD-XCACHE
+            - name: XC_RAMSIZE
+              value: 24g
+            - name: XC_SPACE_LOW_WM
+              value: 0.95
+            - name: XC_SPACE_HIGH_WM
+              value: 0.97
+            - name: XC_BLOCKSIZE
+              value: 512k
+            - name: XC_PREFETCH
+              value: 0
+          volumeMounts:
+            - name: config
+              mountPath: /etc/xrootd/xcache.cfg
+              subpath: xcache.cfg
+            - name: configcmsd
+              mountPath: /etc/xrootd/xcache-cmsd.cfg
+              subpath: xcache-cmsd.cfg
+      volumes:
+        - name: config
+          configMap:
+            name: cms-xcache
+            items:
+              - key: xcache.cfg
+                path: xcache.cfg
+        - name: configcmsd
+          configMap:
+            name: cms-xcache
+            items:
+              - key: xcache-cmsd.cfg
+                path: xcache-cmsd.cfg
