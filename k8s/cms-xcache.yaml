@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cms-xcache/NODENAME
+  namespace: cms-admin
+  labels:
+    k8s-app: cms-xcache/NODENAME
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: cms-xcache/NODENAME
+    spec:
+      hostNetwork: true
+      nodeSelector: WHAT
+      containers:
+        - name: cms-xcache
+          image: vsastray/docker-xcache:cms-xcache
+          imagePullPoliicy: Always
+          env:
+            - name: XC_SITE
+              value: UCSD-XCACHE
+            - name: XC_RAMSIZE
+              value: 24g
+            - name: XC_PORT
+              value: 1094
+            - name: XC_ORIGIN
+              value: cmsxrootd.fnal.gov:1094
+            - name: XC_DATA
+              value: /data1/xcache
+          volumeMounts:
+            - name: config40
+              mountPath: /etc/xrootd/config-common.d/40-cms-xcache-optional.cfg
+              subpath: 40-cms-xcache-optional.cfg
+            - name: config90
+              mountPath: /etc/xrootd/config-common.d/90-node-disks.cfg
+              subpath: 90-node-disks.cfg
+            - name: hostcert
+              mountPath: /etc/grid-security/cache_cert/hostcert.pem
+            - name: hostkey
+              mountPath: /etc/grid-security/cache_cert/hostkey.pem
+      volumes:
+        - name: config40
+          configMap:
+            name: cms-xcache
+            items:
+              - key: 40-cms-xcache-optional.cfg
+                path: 40-cms-xcache-optional.cfg
+        - name: config90
+          configMap:
+            name: cms-xcache
+            items:
+              - key: 90-node-disks.cfg
+                path: 90-node-disks.cfg
+        - name: hostcert
+          hostPath:
+            path: /etc/grid-security/cache_cert/hostcert.pem
+            type: File
+        - name: hostkey
+          hostPath:
+            path: /etc/grid-security/cache_cert/hostkey.pem
+            type: File
