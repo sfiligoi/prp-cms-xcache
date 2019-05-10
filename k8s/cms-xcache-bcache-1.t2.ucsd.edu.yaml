@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cms-xcache-bcache-1-ucsd
+  namespace: cms-admin
+  labels:
+    k8s-app: cms-xcache-bcache-1-ucsd
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: cms-xcache-bcache-1-ucsd
+    spec:
+      hostNetwork: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                -  bcache-1.t2.ucsd.edu
+      containers:
+      - name: cms-xcache-bcache-1-ucsd
+        image: vsastray/docker-xcache:cms-xcache
+        imagePullPolicy: Always
+        env:
+        - name: XC_SITE
+          value: UCSD-XCACHE
+        - name: XC_RAMSIZE
+          value: 24g
+        - name: XC_DATA
+          value: /data1/xcache
+        volumeMounts:
+        - name: config40
+          mountPath: /etc/xrootd/config-common.d/40-cms-xcache-optional.cfg
+          subPath: 40-cms-xcache-optional.cfg
+        - name: config90
+          mountPath: /etc/xrootd/config-common.d/90-node-disks.cfg
+          subPath: 90-node-disks.cfg
+        - name: hostcert
+          mountPath: /etc/grid-security/cache_cert/hostcert.pem
+        - name: hostkey
+          mountPath: /etc/grid-security/cache_cert/hostkey.pem
+        - mountPath: /data1
+          name: data1
+        - mountPath: /data2
+          name: data2
+      volumes:
+      - name: config40
+        configMap:
+          name: cms-xcache-bcache-1-ucsd
+          items:
+          - key: 40-cms-xcache-optional.cfg
+            path: 40-cms-xcache-optional.cfg
+      - name: config90
+        configMap:
+          name: cms-xcache-bcache-1-ucsd
+          items:
+          - key: 90-node-disks.cfg
+            path: 90-node-disks.cfg
+      - name: hostcert
+        hostPath:
+          path: /etc/grid-security/cache_cert/hostcert.pem
+          type: File
+      - name: hostkey
+        hostPath:
+          path: /etc/grid-security/cache_cert/hostkey.pem
+          type: File
+      - name: data1
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s1
+      - name: data2
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s2
+
