@@ -62,11 +62,11 @@ spec:
             path: 90-node-disks.cfg
       - name: hostcert
         hostPath:
-          path: /etc/grid-security/cache_cert/hostcert.pem
+          path: /etc/grid-security/hostcert.pem
           type: File
       - name: hostkey
         hostPath:
-          path: /etc/grid-security/cache_cert/hostkey.pem
+          path: /etc/grid-security/hostkey.pem
           type: File
       - name: data1
         persistentVolumeClaim:
