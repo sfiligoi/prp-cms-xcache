@@ -1,15 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cms-xcache
-  namespace: osg
+  name: cms-xcache/NODENAME
+  namespace: cms-admin
   labels:
-    k8s-app: cms-xcache
+    k8s-app: cms-xcache/NODENAME
 spec:
   template:
     metadata:
       labels:
-        k8s-app: cms-xcache
+        k8s-app: cms-xcache/NODENAME
     spec:
       hostNetwork: true
       nodeSelector: WHAT
@@ -22,31 +22,41 @@ spec:
               value: UCSD-XCACHE
             - name: XC_RAMSIZE
               value: 24g
-            - name: XC_SPACE_LOW_WM
-              value: 0.95
-            - name: XC_SPACE_HIGH_WM
-              value: 0.97
-            - name: XC_BLOCKSIZE
-              value: 512k
-            - name: XC_PREFETCH
-              value: 0
+            - name: XC_PORT
+              value: 1094
+            - name: XC_ORIGIN
+              value: cmsxrootd.fnal.gov:1094
+            - name: XC_DATA
+              value: /data1/xcache
           volumeMounts:
-            - name: config
-              mountPath: /etc/xrootd/xcache.cfg
-              subpath: xcache.cfg
-            - name: configcmsd
-              mountPath: /etc/xrootd/xcache-cmsd.cfg
-              subpath: xcache-cmsd.cfg
+            - name: config40
+              mountPath: /etc/xrootd/config-common.d/40-cms-xcache-optional.cfg
+              subpath: 40-cms-xcache-optional.cfg
+            - name: config90
+              mountPath: /etc/xrootd/config-common.d/90-node-disks.cfg
+              subpath: 90-node-disks.cfg
+            - name: hostcert
+              mountPath: /etc/grid-security/cache_cert/hostcert.pem
+            - name: hostkey
+              mountPath: /etc/grid-security/cache_cert/hostkey.pem
       volumes:
-        - name: config
+        - name: config40
           configMap:
             name: cms-xcache
             items:
-              - key: xcache.cfg
-                path: xcache.cfg
-        - name: configcmsd
+              - key: 40-cms-xcache-optional.cfg
+                path: 40-cms-xcache-optional.cfg
+        - name: config90
           configMap:
             name: cms-xcache
             items:
-              - key: xcache-cmsd.cfg
-                path: xcache-cmsd.cfg
+              - key: 90-node-disks.cfg
+                path: 90-node-disks.cfg
+        - name: hostcert
+          hostPath:
+            path: /etc/grid-security/cache_cert/hostcert.pem
+            type: File
+        - name: hostkey
+          hostPath:
+            path: /etc/grid-security/cache_cert/hostkey.pem
+            type: File
