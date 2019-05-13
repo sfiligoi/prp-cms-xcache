@@ -21,6 +21,13 @@ spec:
                 operator: In
                 values:
                 -  bcache-1.t2.ucsd.edu
+      initContainers:
+      - name: chowndata1
+        image: vsastray/docker-xcache:cms-xcache
+        command: ["sh", "-c", "mkdir /data1/xcache; chown xrootd:xrootd /data1/xcache"]
+      - name: chowndata2
+        image: vsastray/docker-xcache:cms-xcache
+        command: ["sh", "-c", "mkdir /data1/xcache; chown xrootd:xrootd /data2/xcache"]
       containers:
       - name: cms-xcache-bcache-1-ucsd
         image: vsastray/docker-xcache:cms-xcache
