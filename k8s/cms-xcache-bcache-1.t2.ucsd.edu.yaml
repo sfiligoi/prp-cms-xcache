@@ -21,15 +21,6 @@ spec:
                 operator: In
                 values:
                 -  bcache-1.t2.ucsd.edu
-      initContainers:
-      - name: chowndata
-        image: busybox
-        command: ["sh", "-c", "mkdir /data1/xcache; chown xrootd:xrootd /data1/xcache; mkdir /data2/xcache; chown xrootd:xrootd /data2/xcache"]
-        volumeMounts:
-        - mountPath: /data1
-          name: data1
-        - mountPath: /data2
-          name: data2
       containers:
       - name: cms-xcache-bcache-1-ucsd
         image: vsastray/docker-xcache:cms-xcache
@@ -42,6 +33,12 @@ spec:
         - name: XC_DATA
           value: /data1/xcache
         volumeMounts:
+#        - name: configinit
+#          mountPath: /etc/osg/image-config.d/00-create-dirs.sh
+#          subPath: 00-create-dirs.sh
+        - name: configinit
+          mountPath: /etc/osg/image-config.d/00-create-dirs.sh
+          subPath: 00-create-dirs.sh
         - name: config40
           mountPath: /etc/xrootd/config-common.d/40-cms-xcache-optional.cfg
           subPath: 40-cms-xcache-optional.cfg
@@ -57,6 +54,19 @@ spec:
         - mountPath: /data2
           name: data2
       volumes:
+#      - name: configinit
+#        secret:
+#          secretName: cms-xcache-bcache-1-ucsd
+#          items:
+#          - key: 00-create-dirs.sh
+#            path: 00-create-dirs.sh
+#          defaultMode: 365
+      - name: configinit
+        configMap:
+          name: cms-xcache-bcache-1-ucsd
+          items:
+          - key: 00-create-dirs.sh
+            path: 00-create-dirs.sh
       - name: config40
         configMap:
           name: cms-xcache-bcache-1-ucsd
