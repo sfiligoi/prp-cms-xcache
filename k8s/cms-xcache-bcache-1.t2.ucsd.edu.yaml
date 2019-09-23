@@ -23,7 +23,8 @@ spec:
                 -  bcache-1.t2.ucsd.edu
       containers:
       - name: cms-xcache-bcache-1-ucsd
-        image: efajardo/docker-cms-xcache:latest
+        #image: efajardo/docker-cms-xcache:latest
+        image: opensciencegrid/cms-xcache:fresh
         imagePullPolicy: Always
         env:
         - name: XC_SITE
@@ -50,6 +51,62 @@ spec:
           name: data2
         - mountPath: /xcache-root
           name: localroot
+        - mountPath: /data3
+          name: data4
+        - mountPath: /data4
+          name: data5
+        - mountPath: /data5
+          name: data6
+        - mountPath: /data6
+          name: data7
+        - mountPath: /data7
+          name: data8
+        - mountPath: /data8
+          name: data9
+        - mountPath: /data9
+          name: data10
+        - mountPath: /data10
+          name: data11
+        - mountPath: /data11
+          name: data12
+        - mountPath: /data12
+          name: data13
+        - mountPath: /data13
+          name: data14
+        - mountPath: /data14
+          name: data15
+        - mountPath: /data15
+          name: data16
+        - mountPath: /data16
+          name: data17
+        - mountPath: /data17
+          name: data18
+        - mountPath: /data18
+          name: data19
+        - mountPath: /data19
+          name: data20
+        - mountPath: /data20
+          name: data21
+        - mountPath: /data21
+          name: data22
+        - mountPath: /data22
+          name: data23
+        - mountPath: /data23
+          name: data24
+        - mountPath: /data24
+          name: data25
+        - mountPath: /data25
+          name: data26
+        - mountPath: /data26
+          name: data27
+        - mountPath: /data27
+          name: data28
+        - mountPath: /data28
+          name: data29
+        - mountPath: /data29
+          name: data30
+        - mountPath: /data30
+          name: data31
       volumes:
       - name: configinit
         configMap:
@@ -86,4 +143,123 @@ spec:
       - name: localroot
         persistentVolumeClaim:
           claimName: pvc-bcache-1-ucsd-s3
-
+      - name: data3
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s4
+      - name: data4
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s5
+      - name: data5
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s6
+      - name: data6
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s7
+      - name: data7
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s8
+      - name: data8
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s9
+      - name: data9
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s10
+      - name: data10
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s11
+      - name: data11
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s12
+      - name: data12
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s13
+      - name: data13
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s14
+      - name: data14
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s15
+      - name: data15
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s16
+      - name: data16
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s17
+      - name: data17
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s18
+      - name: data18
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s19
+      - name: data19
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s20
+      - name: data20
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s21
+      - name: data21
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s22
+      - name: data22
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s23
+      - name: data23
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s24
+      - name: data24
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s25
+      - name: data25
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s26
+      - name: data26
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s27
+      - name: data27
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s28
+      - name: data28
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s29
+      - name: data29
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s30
+      - name: data30
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s31
+      - name: data31
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s32
+      - name: data32
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s33
+      - name: data33
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s34
+      - name: data34
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s35
+      - name: data35
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s36
+      - name: data36
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s37
+      - name: data37
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s38
+      - name: data38
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s39
+      - name: data39
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s40
+      - name: data40
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s41
+      - name: data41
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s42
+      - name: data42
+        persistentVolumeClaim:
+          claimName: pvc-bcache-1-ucsd-s43
