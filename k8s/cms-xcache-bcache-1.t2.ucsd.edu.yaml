@@ -1,17 +1,27 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cms-xcache-bcache-1-ucsd
-  namespace: cms-admin
+  creationTimestamp: null
   labels:
-    k8s-app: cms-xcache-bcache-1-ucsd
+    k8s-app: cms-xcache
+  name: cms-xcache-ucsd-bcache-1
 spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: cms-xcache
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        k8s-app: cms-xcache-bcache-1-ucsd
+        k8s-app: cms-xcache
     spec:
-      hostNetwork: true
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -20,31 +30,39 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                -  bcache-1.t2.ucsd.edu
+                - bcache-1.t2.ucsd.edu
       containers:
-      - name: cms-xcache-bcache-1-ucsd
-        #image: efajardo/docker-cms-xcache:latest
-        image: opensciencegrid/cms-xcache:fresh
-        imagePullPolicy: Always
-        env:
+      - env:
         - name: XC_SITE
           value: UCSD-XCACHE
         - name: XC_RAMSIZE
           value: 24g
+        image: opensciencegrid/cms-xcache:fresh
+        imagePullPolicy: Always
+        name: cms-xcache-bcache-1-ucsd
+        resources:
+           limits:
+              memory: 24Gi
+              cpu: 6
+           requests:
+              memory: 18Gi
+              cpu: 3
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
         volumeMounts:
-        - name: configinit
-          mountPath: /etc/osg/image-config.d/00-create-dirs.sh
+        - mountPath: /etc/osg/image-config.d/00-create-dirs.sh
+          name: configinit
           subPath: 00-create-dirs.sh
-        - name: config90
-          mountPath: /etc/xrootd/config.d/90-node-disks.cfg
+        - mountPath: /etc/xrootd/config.d/90-node-disks.cfg
+          name: config90
           subPath: 90-node-disks.cfg
-        - name: config95
-          mountPath: /etc/xrootd/config.d/95-local-ucsd.cfg 
-          subPath: 95-local-ucsd.cfg 
-        - name: hostcert
-          mountPath: /etc/grid-security/hostcert.pem
-        - name: hostkey
-          mountPath: /etc/grid-security/hostkey.pem
+        - mountPath: /etc/xrootd/config.d/95-local-ucsd.cfg
+          name: config95
+          subPath: 95-local-ucsd.cfg
+        - mountPath: /etc/grid-security/hostcert.pem
+          name: hostcert
+        - mountPath: /etc/grid-security/hostkey.pem
+          name: hostkey
         - mountPath: /data1
           name: data1
         - mountPath: /data2
@@ -107,33 +125,42 @@ spec:
           name: data30
         - mountPath: /data30
           name: data31
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
       volumes:
-      - name: configinit
-        configMap:
-          name: cms-xcache-bcache-1-ucsd
+      - configMap:
+          defaultMode: 420
           items:
           - key: 00-create-dirs.sh
             path: 00-create-dirs.sh
-      - name: config90
-        configMap:
           name: cms-xcache-bcache-1-ucsd
+        name: configinit
+      - configMap:
+          defaultMode: 420
           items:
           - key: 90-node-disks.cfg
             path: 90-node-disks.cfg
-      - name: config95
-        configMap:
           name: cms-xcache-bcache-1-ucsd
+        name: config90
+      - configMap:
+          defaultMode: 420
           items:
           - key: 95-local-ucsd.cfg
             path: 95-local-ucsd.cfg
-      - name: hostcert
-        hostPath:
+          name: cms-xcache-bcache-1-ucsd
+        name: config95
+      - hostPath:
           path: /etc/grid-security/hostcert.pem
           type: File
-      - name: hostkey
-        hostPath:
+        name: hostcert
+      - hostPath:
           path: /etc/grid-security/hostkey.pem
           type: File
+        name: hostkey
       - name: data1
         persistentVolumeClaim:
           claimName: pvc-bcache-1-ucsd-s1
@@ -263,3 +290,4 @@ spec:
       - name: data42
         persistentVolumeClaim:
           claimName: pvc-bcache-1-ucsd-s43
+status: {}
